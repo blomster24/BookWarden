@@ -12,6 +12,7 @@ public class BiblotecaController {
 
     EntityManager em = UtilEntitity.getEntityManager();
     static UsuarioController usuarioController = new UsuarioController();
+    private LibroController libroController = new LibroController();
 
     public void mostrarLibros() {
         System.out.println("Mostrando libros");
@@ -61,5 +62,14 @@ public class BiblotecaController {
 
     public boolean crearUsuario(String username, String password) {
         return usuarioController.crearUsuario(username, password);
+    }
+
+    public void verLibros() {
+        List<Libro> libros = libroController.verLibros();
+        for (Libro libro :
+                libros) {
+            System.out.println(libro.getId() + ". " + libro.getTitulo() + ", " + libro.getAutor() + ", " + libro.getAnoPublicacion() + ".");
+        }
+        System.out.println();
     }
 }

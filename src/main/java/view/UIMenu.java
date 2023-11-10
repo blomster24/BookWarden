@@ -12,8 +12,8 @@ public class UIMenu {
 
     public static void showMenu() {
 
-        bibloteca.mostrarLibros();
-        bibloteca.mostrarUsuarios();
+        //bibloteca.mostrarLibros();
+        //bibloteca.mostrarUsuarios();
         System.out.println("*****  Book Warden *****");
         System.out.println("Seleccione una opción");
         Scanner sc = new Scanner(System.in);
@@ -47,8 +47,6 @@ public class UIMenu {
                     break;
             }
         } while (respuesta != 0);
-
-
     }
 
     public static void showIniciarSesion() {
@@ -96,12 +94,48 @@ public class UIMenu {
     }
 
     private static void showMenuUsuario() {
-        System.out.println("1. Agregar libro");
-        System.out.println("2. Prestar libro");
-        System.out.println("3. Devolver libro");
-        System.out.println("0. Salir");
-    }
+        Scanner sc = new Scanner(System.in);
+        int respuesta = 0;
 
+        do {
+            System.out.println("1. Agregar libro");
+            System.out.println("2. Prestar libro");
+            System.out.println("3. Devolver libro");
+            System.out.println("4. Ver libros");
+            System.out.println("0. Salir");
+            System.out.print(">>> ");
+
+            int value = 0;
+
+            if (sc.hasNextInt()) {
+                value = sc.nextInt();
+                if (value > 4) {
+                    System.out.println("Ingrese un número entre 0 y 4\n");
+                    UIMenu.showMenuUsuario();
+                }
+            } else {
+                System.out.println("Ingrese un número entre 0 y 4\n");
+                UIMenu.showMenuUsuario();
+            }
+            respuesta = value;
+
+            switch (respuesta) {
+                case 1:
+                    showAgregarLibro();
+                    break;
+                case 2:
+                    showPrestarLibro();
+                    break;
+                case 3:
+                    // showDevolverLibro();
+                    break;
+                case 4:
+                    showVerLibros();
+                    break;
+            }
+        } while (respuesta != 0);
+        UIMenu.showMenu();
+    }
 
     private static void showAgregarLibro() {
         Scanner sc = new Scanner(System.in);
@@ -111,19 +145,32 @@ public class UIMenu {
         int anoPublicacion = 0;
 
         System.out.println("Titulo del libro:");
-        System.out.print(">>>");
+        System.out.print(">>> ");
         titulo = sc.nextLine();
 
         System.out.println("Autor del libro");
-        System.out.print(">>>");
+        System.out.print(">>> ");
         autor = sc.nextLine();
 
         System.out.println("Año de publicación del libro");
-        System.out.print(">>>");
-        anoPublicacion = Integer.parseInt(sc.nextLine());
+        System.out.print(">>> ");
+        try {
+            anoPublicacion = Integer.parseInt(sc.nextLine());
+            bibloteca.agregarLibro(titulo, autor, anoPublicacion);
+        } catch (Exception e) {
+            System.out.println("Ingresa un número valido");
+        }
 
-        bibloteca.agregarLibro(titulo, autor, anoPublicacion);
+        UIMenu.showMenuUsuario();
+    }
 
+    private static void showPrestarLibro() {
+
+    }
+
+    private static void showVerLibros(){
+        System.out.println("Presione 0 para volver");
+        bibloteca.verLibros();
     }
 
 }
