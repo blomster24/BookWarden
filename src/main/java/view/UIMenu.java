@@ -13,7 +13,8 @@ public class UIMenu {
     public static void showMenu() {
 
         bibloteca.mostrarLibros();
-
+        bibloteca.mostrarUsuarios();
+        System.out.println("*****  Book Warden *****");
         System.out.println("Seleccione una opción");
         Scanner sc = new Scanner(System.in);
         int respuesta = 0;
@@ -53,7 +54,7 @@ public class UIMenu {
     public static void showIniciarSesion() {
         Scanner sc = new Scanner(System.in);
         String username = "";
-        String password;
+        String password = "";
 
         System.out.println("Ingresa tu usuario");
         System.out.print(">>> ");
@@ -71,15 +72,34 @@ public class UIMenu {
         }
     }
 
+    private static void showCrearUsuario() {
+        Scanner sc = new Scanner(System.in);
+        String username = "";
+        String password = "";
+
+        System.out.println("Ingresa tu usuario");
+        System.out.print(">>> ");
+        username = sc.nextLine();
+
+        System.out.println("Ingresa tu contraseña");
+        System.out.print(">>> ");
+        password = sc.nextLine();
+
+        boolean sesion = bibloteca.crearUsuario(username, password);
+        if (sesion) {
+            UIMenu.showMenu();
+        } else {
+            System.out.println("No se pudo crear el usuario");
+            UIMenu.showCrearUsuario();
+        }
+
+    }
+
     private static void showMenuUsuario() {
         System.out.println("1. Agregar libro");
         System.out.println("2. Prestar libro");
         System.out.println("3. Devolver libro");
         System.out.println("0. Salir");
-    }
-
-
-    private static void showCrearUsuario() {
     }
 
 

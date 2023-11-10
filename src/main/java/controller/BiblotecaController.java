@@ -1,6 +1,7 @@
 package controller;
 
 import model.Libro;
+import model.Usuario;
 import util.UtilEntitity;
 import view.UIMenu;
 
@@ -16,7 +17,11 @@ public class BiblotecaController {
         System.out.println("Mostrando libros");
         List<Libro> libros = em.createQuery("SELECT l FROM Libro l", Libro.class).getResultList();
         libros.forEach(System.out::println);
+    }
 
+    public void mostrarUsuarios() {
+        List<Usuario> usuarios = em.createQuery("SELECT u FROM Usuario u", Usuario.class).getResultList();
+        usuarios.forEach(System.out::println);
     }
 
 
@@ -52,5 +57,9 @@ public class BiblotecaController {
 
     public static boolean iniciarSesion(String username, String password) {
         return usuarioController.iniciarSesion(username, password);
+    }
+
+    public boolean crearUsuario(String username, String password) {
+        return usuarioController.crearUsuario(username, password);
     }
 }

@@ -17,6 +17,7 @@ public class UsuarioController {
             if (u.getNombreUsuario().equals(username)) {
                 if (u.getContrasena().equals(password)) {
                     System.out.println("Sesión iniciada");
+                    System.out.println();
                     return true;
                 }
             } else {
@@ -24,5 +25,25 @@ public class UsuarioController {
             }
         }
         return false;
+    }
+
+    public boolean crearUsuario(String username, String password) {
+        Usuario usuario = new Usuario();
+        if (username.length() == 0) {
+            System.out.println("Ingresa un nombre de usuario");
+            return false;
+        } else {
+            usuario.setNombreUsuario(username);
+        }
+        if (password.length() == 0) {
+            System.out.println("Ingresa una contraseña");
+            return false;
+        } else {
+            usuario.setContrasena(password);
+            em.getTransaction().begin();
+            em.persist(usuario);
+            em.getTransaction().commit();
+            return true;
+        }
     }
 }
