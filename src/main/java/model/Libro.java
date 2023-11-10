@@ -1,7 +1,6 @@
-package entity;
+package model;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name = "libros")
@@ -12,19 +11,24 @@ public class Libro {
     private int id;
     private String titulo;
     private String autor;
+
     @Column(name = "ano_publicacion")
-    private Date anoPublicacion;
+    private int anoPublicacion;
     private boolean estado;
 
     public Libro() {
+
     }
 
-    public Libro(int id, String titulo, String autor, Date anoPublicacion, boolean estado) {
-        this.id = id;
+    public Libro(String titulo, String autor, int anoPublicacion) {
         this.titulo = titulo;
         this.autor = autor;
         this.anoPublicacion = anoPublicacion;
-        this.estado = estado;
+        this.estado = false;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getTitulo() {
@@ -43,11 +47,11 @@ public class Libro {
         this.autor = autor;
     }
 
-    public Date getAnoPublicacion() {
+    public int getAnoPublicacion() {
         return anoPublicacion;
     }
 
-    public void setAnoPublicacion(Date anoPublicacion) {
+    public void setAnoPublicacion(int anoPublicacion) {
         this.anoPublicacion = anoPublicacion;
     }
 
@@ -67,4 +71,5 @@ public class Libro {
                 ", anoPublicacion= " + anoPublicacion +
                 ", estado= " + estado;
     }
+
 }
