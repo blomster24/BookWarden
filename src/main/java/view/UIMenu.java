@@ -67,10 +67,15 @@ public class UIMenu {
 
         boolean sesion = bibloteca.iniciarSesion(username, password);
         if (sesion) {
-            System.out.println(UsuarioController.usuarioActivo);
+            //System.out.println(UsuarioController.usuarioActivo);
+            System.out.println("Sesión iniciada");
+            System.out.println();
             UIMenu.showMenuUsuario();
         } else {
-            UIMenu.showIniciarSesion();
+            System.out.println("Datos incorrectos");
+            System.out.println();
+            UIMenu.showMenu();
+
         }
     }
 
@@ -97,7 +102,7 @@ public class UIMenu {
 
     }
 
-    private static void showMenuUsuario() {
+    public static void showMenuUsuario() {
         Scanner sc = new Scanner(System.in);
         int respuesta = 0;
 
@@ -140,12 +145,9 @@ public class UIMenu {
                 case 5:
                     showVerLibros();
                     break;
-                case 0:
-                    UsuarioController.usuarioActivo = null;
-                    System.out.println("UsuarioController.usuarioActivo = " + UsuarioController.usuarioActivo);
-                    break;
             }
         } while (respuesta != 0);
+        UsuarioController.usuarioActivo = null;
     }
 
 
@@ -174,7 +176,6 @@ public class UIMenu {
             System.out.println("Ingresa un número valido");
         }
 
-        UIMenu.showMenuUsuario();
     }
 
     private static void showBuscarLibro() {
@@ -182,40 +183,40 @@ public class UIMenu {
         System.out.println("Escribe el titulo del libro");
         String titulo = sc.nextLine();
         bibloteca.buscarLibro(titulo);
-        int respuesta = 0;
 
-        do {
-            System.out.println("1. Prestar libro");
-            System.out.println("0. Volver");
-            System.out.print(">>> ");
 
-            int value = 0;
+        System.out.println("1. Prestar libro");
+        System.out.println("0. Volver");
+        System.out.print(">>> ");
 
-            if (sc.hasNextInt()) {
-                value = sc.nextInt();
-                if (value > 1) {
-                    System.out.println("Ingrese un número entre 0 y 1\n");
-                    UIMenu.showMenuUsuario();
-                }
-            } else {
+        int value = 0;
+
+        if (sc.hasNextInt()) {
+            value = sc.nextInt();
+            if (value > 1) {
                 System.out.println("Ingrese un número entre 0 y 1\n");
-
             }
-            respuesta = value;
+        } else {
+            System.out.println("Ingrese un número entre 0 y 1\n");
 
-            switch (respuesta) {
-                case 1:
-                    showPrestarLibro();
-                    respuesta = 0;
-                    break;
-            }
-        } while (respuesta != 0);
+        }
+
+        switch (value) {
+            case 1:
+                showPrestarLibro();
+
+                break;
+            case 0:
+                break;
+        }
+        System.out.println();
     }
 
     private static void showPrestarLibro() {
         System.out.println();
         Scanner sc = new Scanner(System.in);
         System.out.println("Para prestar un libro escribe su ID");
+        System.out.print(">>> ");
         int idLibro = 0;
         try {
             idLibro = sc.nextInt();

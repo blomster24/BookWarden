@@ -4,6 +4,7 @@ import model.Usuario;
 import util.UtilEntitity;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class UsuarioController {
@@ -12,21 +13,19 @@ public class UsuarioController {
     public static Usuario usuarioActivo = null;
 
     public boolean iniciarSesion(String username, String password) {
-        List<Usuario> usuarios = em.createQuery("SELECT u FROM Usuario u", Usuario.class).getResultList();
-        for (Usuario u :
-                usuarios) {
-            if (u.getNombreUsuario().equals(username)) {
-                if (u.getContrasena().equals(password)) {
-                    System.out.println("Sesión iniciada");
-                    System.out.println();
-                    usuarioActivo = u;
-                    return true;
-                }
-            } else {
-                System.out.println("Usuario no existe");
-            }
+        TypedQuery<Usuario> consulta =
+                em.createQuery("SELECT u FROM Usuario u WHERE u.nombreUsuario = :username AND u.contrasena = :password",
+                        Usuario.class);
+        consulta.setParameter("username", username);
+        consulta.setParameter("password", password);
+
+        List<Usuario> usuarios = consulta.getResultList();
+        if (usuarios.size() == 1) {
+            usuarioActivo = usuarios.get(0);
+            return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     public boolean crearUsuario(String username, String password) {

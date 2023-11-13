@@ -8,7 +8,6 @@ import view.UIMenu;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
-import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 import java.util.Date;
 import java.util.List;
@@ -100,6 +99,8 @@ public class BiblotecaController {
                 em.getTransaction().begin();
                 em.merge(libro);
                 em.getTransaction().commit();
+                System.out.println("Libro devuelto a la biblioteca");
+                System.out.println();
             }
         } catch (PersistenceException e) {
             System.out.println("No se pudo devolver el libro");
@@ -126,9 +127,15 @@ public class BiblotecaController {
 
     public void buscarLibro(String titulo) {
         List<Libro> librosEncontrados = libroController.buscarLibro(titulo);
-        for (Libro libro :
-                librosEncontrados) {
-            System.out.println(libro.getId() + ". " + libro.getTitulo() + ", " + libro.getAutor() + ", " + libro.getAnoPublicacion() + ".");
+        if (!librosEncontrados.isEmpty()) {
+            for (Libro libro :
+                    librosEncontrados) {
+                System.out.println(libro.getId() + ". " + libro.getTitulo() + ", " + libro.getAutor() + ", " + libro.getAnoPublicacion() + ".");
+            }
+        } else {
+            System.out.println("No se han encontrado libros con el titulo: " + titulo);
+            System.out.println();
+            UIMenu.showMenuUsuario();
         }
         System.out.println();
     }

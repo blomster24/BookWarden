@@ -20,11 +20,8 @@ public class LibroController {
         TypedQuery<Libro> consulta = em.createQuery("SELECT l FROM Libro l WHERE LOWER(l.titulo) LIKE LOWER(:titulo) AND l.estado = 0", Libro.class);
         consulta.setParameter("titulo", "%" + titulo + "%");
         List<Libro> libros = consulta.getResultList();
-        if (!libros.isEmpty()) {
-            return libros;
-        } else {
-            return null;
-        }
+
+        return libros;
     }
 
 }
