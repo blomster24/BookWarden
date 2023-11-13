@@ -24,6 +24,10 @@ public class Usuario {
         this.contrasena = contrasena;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public String getNombreUsuario() {
         return nombreUsuario;
     }

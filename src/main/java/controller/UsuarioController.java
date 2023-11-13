@@ -9,6 +9,7 @@ import java.util.List;
 public class UsuarioController {
 
     EntityManager em = UtilEntitity.getEntityManager();
+    public static Usuario usuarioActivo = null;
 
     public boolean iniciarSesion(String username, String password) {
         List<Usuario> usuarios = em.createQuery("SELECT u FROM Usuario u", Usuario.class).getResultList();
@@ -18,6 +19,7 @@ public class UsuarioController {
                 if (u.getContrasena().equals(password)) {
                     System.out.println("Sesión iniciada");
                     System.out.println();
+                    usuarioActivo = u;
                     return true;
                 }
             } else {

@@ -1,11 +1,16 @@
 package controller;
 
+import model.Biblioteca;
 import model.Libro;
 import model.Usuario;
 import util.UtilEntitity;
 import view.UIMenu;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
+import javax.persistence.RollbackException;
+import javax.persistence.TypedQuery;
+import java.util.Date;
 import java.util.List;
 
 public class BiblotecaController {
@@ -32,27 +37,73 @@ public class BiblotecaController {
         libro.setAutor(autor);
         libro.setAnoPublicacion(anoPublicacion);
 
-        em.getTransaction().begin();
-        em.persist(libro);
-        em.getTransaction().commit();
+        try {
+            em.getTransaction().begin();
+            em.persist(libro);
+            em.getTransaction().commit();
+            System.out.println("Libro agregado");
+            System.out.println();
+        } catch (PersistenceException e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            System.out.println("No se pudo agregar el libro");
+            System.out.println();
+        }
+
     }
 
     public void prestarLibro(int idLibro, int idUsuario) {
-        Libro libro = em.find(Libro.class, idLibro);
-        libro.setEstado(true);
+        Biblioteca biblioteca = new Biblioteca();
+        biblioteca.setIdLibro(idLibro);
+        biblioteca.setIdUsuario(idUsuario);
+        biblioteca.setFechaPrestamo(new Date());
 
-        em.getTransaction().begin();
-        em.merge(libro);
-        em.getTransaction().commit();
+        try {
+            em.getTransaction().begin();
+            em.persist(biblioteca);
+            em.getTransaction().commit();
+
+            Libro libro = em.find(Libro.class, idLibro);
+            libro.setEstado(true);
+
+            em.getTransaction().begin();
+            em.merge(libro);
+            em.getTransaction().commit();
+            System.out.println("Libro prestado");
+            System.out.println();
+        } catch (PersistenceException e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            System.out.println("No se pudo prestar el libro");
+            System.out.println();
+        }
     }
 
-    public void devolverLibro(int id) {
-        Libro libro = em.find(Libro.class, id);
-        libro.setEstado(false);
+    public void devolverLibro(int idLibro, int idUsuario) {
+        TypedQuery<Biblioteca> biblioteca = em.createQuery("SELECT b FROM Biblioteca b WHERE b.idUsuario = :idUsuario AND b.idLibro = : idLibro", Biblioteca.class);
+        biblioteca.setParameter("idUsuario", idUsuario);
+        biblioteca.setParameter("idLibro", idLibro);
+        List<Biblioteca> resultados = biblioteca.getResultList();
 
-        em.getTransaction().begin();
-        em.merge(libro);
-        em.getTransaction().commit();
+        try {
+            for (Biblioteca b : resultados) {
+                b.setFechaDevolucion(new Date());
+                em.getTransaction().begin();
+                em.merge(b);
+                em.getTransaction().commit();
+
+                Libro libro = em.find(Libro.class, idLibro);
+                libro.setEstado(false);
+
+                em.getTransaction().begin();
+                em.merge(libro);
+                em.getTransaction().commit();
+            }
+        } catch (PersistenceException e) {
+            System.out.println("No se pudo devolver el libro");
+        }
     }
 
 
@@ -71,5 +122,30 @@ public class BiblotecaController {
             System.out.println(libro.getId() + ". " + libro.getTitulo() + ", " + libro.getAutor() + ", " + libro.getAnoPublicacion() + ".");
         }
         System.out.println();
+    }
+
+    public void buscarLibro(String titulo) {
+        List<Libro> librosEncontrados = libroController.buscarLibro(titulo);
+        for (Libro libro :
+                librosEncontrados) {
+            System.out.println(libro.getId() + ". " + libro.getTitulo() + ", " + libro.getAutor() + ", " + libro.getAnoPublicacion() + ".");
+        }
+        System.out.println();
+    }
+
+    public void misLibrosPrestados() {
+        TypedQuery<Biblioteca> consulta =
+                em.createQuery("SELECT b FROM Biblioteca b WHERE b.idUsuario = :idUsuario AND b.fechaDevolucion IS NULL", Biblioteca.class);
+        consulta.setParameter("idUsuario", UsuarioController.usuarioActivo.getId());
+        List<Biblioteca> misLibros = consulta.getResultList();
+        if (misLibros.isEmpty()) {
+            System.out.println("No tienes libros prestados");
+        } else {
+            for (Biblioteca b :
+                    misLibros) {
+                Libro l = em.find(Libro.class, b.getIdLibro());
+                System.out.println(b.getIdLibro() + ". " + l.getTitulo() + " " + b.getFechaPrestamo());
+            }
+        }
     }
 }

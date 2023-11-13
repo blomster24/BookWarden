@@ -10,23 +10,21 @@ public class Biblioteca {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int id;
+    private int id;
 
     @Column(name = "usuario_ID")
-    public int idUsuario;
+    private int idUsuario;
 
     @Column(name = "libro_ID")
-    public int idLibro;
+    private int idLibro;
 
     @Column(name = "fecha_prestamo")
-    public Date fechaPrestamo;
+    private Date fechaPrestamo;
 
     @Column(name = "fecha_devolucion")
-    public Date fechaDevolucion;
+    private Date fechaDevolucion;
 
     public Biblioteca() {
-        fechaPrestamo = new Date();
-        fechaDevolucion = new Date();
     }
 
     public Biblioteca(int idUsuario, int idLibro, Date fechaPrestamo) {
