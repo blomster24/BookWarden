@@ -4,7 +4,7 @@ import model.Biblioteca;
 import model.Libro;
 import model.Usuario;
 import util.UtilEntitity;
-import view.UIMenu;
+import view.UIMenuUsuario;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
@@ -81,10 +81,10 @@ public class BiblotecaController {
     }
 
     public void devolverLibro(int idLibro, int idUsuario) {
-        TypedQuery<Biblioteca> biblioteca = em.createQuery("SELECT b FROM Biblioteca b WHERE b.idUsuario = :idUsuario AND b.idLibro = : idLibro", Biblioteca.class);
-        biblioteca.setParameter("idUsuario", idUsuario);
-        biblioteca.setParameter("idLibro", idLibro);
-        List<Biblioteca> resultados = biblioteca.getResultList();
+        TypedQuery<Biblioteca> consulta = em.createQuery("SELECT b FROM Biblioteca b WHERE b.idUsuario = :idUsuario AND b.idLibro = : idLibro", Biblioteca.class);
+        consulta.setParameter("idUsuario", idUsuario);
+        consulta.setParameter("idLibro", idLibro);
+        List<Biblioteca> resultados = consulta.getResultList();
 
         try {
             for (Biblioteca b : resultados) {
@@ -101,6 +101,7 @@ public class BiblotecaController {
                 em.getTransaction().commit();
                 System.out.println("Libro devuelto a la biblioteca");
                 System.out.println();
+                break;
             }
         } catch (PersistenceException e) {
             System.out.println("No se pudo devolver el libro");
@@ -125,8 +126,8 @@ public class BiblotecaController {
         System.out.println();
     }
 
-    public void buscarLibro(String titulo) {
-        List<Libro> librosEncontrados = libroController.buscarLibro(titulo);
+    public void buscarTitulo(String titulo) {
+        List<Libro> librosEncontrados = libroController.buscarTitulo(titulo);
         if (!librosEncontrados.isEmpty()) {
             for (Libro libro :
                     librosEncontrados) {
@@ -135,7 +136,22 @@ public class BiblotecaController {
         } else {
             System.out.println("No se han encontrado libros con el titulo: " + titulo);
             System.out.println();
-            UIMenu.showMenuUsuario();
+            UIMenuUsuario.showMenuUsuario();
+        }
+        System.out.println();
+    }
+
+    public void buscarAutor(String autor) {
+        List<Libro> librosEncontrados = libroController.buscarAutor(autor);
+        if (!librosEncontrados.isEmpty()) {
+            for (Libro libro :
+                    librosEncontrados) {
+                System.out.println(libro.getId() + ". " + libro.getTitulo() + ", " + libro.getAutor() + ", " + libro.getAnoPublicacion() + ".");
+            }
+        } else {
+            System.out.println("No se han encontrado libros con el autor: " + autor);
+            System.out.println();
+            UIMenuUsuario.showMenuUsuario();
         }
         System.out.println();
     }
@@ -155,4 +171,6 @@ public class BiblotecaController {
             }
         }
     }
+
+
 }
